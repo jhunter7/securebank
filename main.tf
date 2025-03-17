@@ -28,7 +28,7 @@ resource "aws_security_group" "github_runner_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["172.2.163.205/32","44.204.68.63/32"]  # Replace with your IP address
+    cidr_blocks = ["172.2.163.205/32", "44.204.68.63/32"] # Replace with your IP address
   }
 
   egress {
@@ -41,9 +41,9 @@ resource "aws_security_group" "github_runner_sg" {
 
 # EC2 Instance (free-tier eligible)
 resource "aws_instance" "github_runner" {
-  ami           = "ami-0f9de6e2d2f067fca"  # Ubuntu 20.04 LTS in us-east-1; update if needed
-  instance_type = "t2.micro"               # Free-tier eligible
-  key_name      = "jetops-gha-runner"       # Replace with your AWS key pair name
+  ami           = "ami-0f9de6e2d2f067fca" # Ubuntu 20.04 LTS in us-east-1; update if needed
+  instance_type = "t2.micro"              # Free-tier eligible
+  key_name      = "jetops-gha-runner"     # Replace with your AWS key pair name
 
   vpc_security_group_ids = [aws_security_group.github_runner_sg.id]
 
