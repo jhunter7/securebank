@@ -31,9 +31,9 @@ resource "aws_security_group" "github_runner_sg" {
 
 # EC2 Instance (free-tier eligible) for GitHub Runner; note that this is a separate instance
 resource "aws_instance" "github_runner" {
-  ami           = "ami-0f9de6e2d2f067fca" 
-  instance_type = "t2.micro"              
-  key_name      = "kms_key"     
+  ami           = "ami-0f9de6e2d2f067fca"
+  instance_type = "t2.micro"
+  key_name      = "kms_key"
 
   vpc_security_group_ids = [aws_security_group.github_runner_sg.id]
 
