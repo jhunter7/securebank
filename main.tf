@@ -6,7 +6,7 @@ resource "aws_instance" "securebank_instance" {
   availability_zone = var.instance_config.region
 
   tags = {
-    Name = "instance-${each.key}-${count.index + 1}"
+    Name = "instance-${count.index + 1}"
   }
 }
 
