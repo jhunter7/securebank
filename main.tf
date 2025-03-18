@@ -1,5 +1,5 @@
 resource "aws_instance" "securebank_instance" {
-  count = var.instance_config.count
+  count = 3
 
   ami                    = var.instance_config.ami
   instance_type          = var.instance_config.instance_type
@@ -7,7 +7,21 @@ resource "aws_instance" "securebank_instance" {
   vpc_security_group_ids = [aws_security_group.securebank_instance_sg.id]
 
   tags = {
-    Name = "securebank-instance-${count.index + 1}"
+    Name = "securebank-${count.index + 1}"
+  }
+}
+
+resource "aws_instance" "securebank_instance_west" {
+  provider = aws.west
+  count    = 2
+
+  ami                    = var.instance_config.ami
+  instance_type          = var.instance_config.instance_type
+  availability_zone      = "us-west-2a"
+  vpc_security_group_ids = [aws_security_group.securebank_instance_sg.id]
+
+  tags = {
+    Name = "securebank-${count.index + 1}"
   }
 }
 
