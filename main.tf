@@ -33,7 +33,7 @@ resource "aws_security_group" "github_runner_sg" {
 resource "aws_instance" "github_runner" {
   ami           = "ami-0f9de6e2d2f067fca"
   instance_type = "t2.micro"
-  key_name      = "kms_key"
+  key_name      = "securebank-key-pair"
 
   vpc_security_group_ids = [aws_security_group.github_runner_sg.id]
 
