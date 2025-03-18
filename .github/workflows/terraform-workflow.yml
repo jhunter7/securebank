@@ -32,14 +32,14 @@ jobs:
       - name: Terraform Format Check
         run: terraform fmt -check -recursive
 
-      # - name: Terraform Plan
-      #   run: terraform plan -out=plan.tfplan
+      - name: Terraform Plan
+        run: terraform plan -out=plan.tfplan
 
-      # - name: Upload Terraform Plan Artifact
-      #   uses: actions/upload-artifact@v3.1.2
-      #   with:
-      #     name: tfplan
-      #     path: plan.tfplan
+      - name: Upload Terraform Plan Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: tfplan
+          path: plan.tfplan
 
   terraform_apply:
     name: Terraform Apply
