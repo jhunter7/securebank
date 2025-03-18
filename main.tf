@@ -1,25 +1,15 @@
-terraform {
-  backend "s3" {
-    bucket         = "jetops-tfstate"
-    key            = "terraform/github-runner/terraform.tfstate"
-    region         = "us-east-1"
-    encrypt        = true
-    dynamodb_table = "tf-lock-table"
-  }
+resource "aws_instance" "securebank_instance" {
+  count = var.instance_config.count
 
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.0"
-    }
+  ami               = var.instance_config.ami
+  instance_type     = var.instance_config.instance_type
+  availability_zone = var.instance_config.region
+
+  tags = {
+    Name = "instance-${each.key}-${count.index + 1}"
   }
 }
 
-provider "aws" {
-  region = "us-east-1"
-}
-
-# Security Group for SSH access (adjust CIDR for production)
 resource "aws_security_group" "github_runner_sg" {
   name        = "github-runner-sg"
   description = "Allow SSH access for GitHub runner"
@@ -28,7 +18,7 @@ resource "aws_security_group" "github_runner_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["172.2.163.205/32", "44.204.68.63/32"] # Replace with your IP address
+    cidr_blocks = ["172.2.163.205/32", "44.204.68.63/32"]
   }
 
   egress {
@@ -39,15 +29,15 @@ resource "aws_security_group" "github_runner_sg" {
   }
 }
 
-# EC2 Instance (free-tier eligible)
+# EC2 Instance (free-tier eligible) for GitHub Runner; note that this is a separate instance
 resource "aws_instance" "github_runner" {
-  ami           = "ami-0f9de6e2d2f067fca" # Ubuntu 20.04 LTS in us-east-1; update if needed
-  instance_type = "t2.micro"              # Free-tier eligible
-  key_name      = "jetops-gha-runner"     # Replace with your AWS key pair name
+  ami           = "ami-0f9de6e2d2f067fca" 
+  instance_type = "t2.micro"              
+  key_name      = "kms_key"     
 
   vpc_security_group_ids = [aws_security_group.github_runner_sg.id]
 
   tags = {
-    Name = "GitHubRunner"
+    Name = "SecureBank"
   }
 }
