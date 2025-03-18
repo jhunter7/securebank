@@ -5,7 +5,7 @@ resource "aws_instance" "securebank_instance" {
   instance_type          = var.instance_config.instance_type
   availability_zone      = var.instance_config.region
   vpc_security_group_ids = [aws_security_group.securebank_instance_sg.id]
-  key_name               = "securebank-key-pair" 
+  key_name               = "securebnk-keypair" 
 
   tags = {
     Name = "securebank-instance-${count.index + 1}"
@@ -30,6 +30,8 @@ resource "aws_security_group" "securebank_instance_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+
 
 # resource "aws_instance" "securebank_instance" {
 #   provider = aws.east
