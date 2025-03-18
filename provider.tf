@@ -24,3 +24,10 @@ provider "aws" {
   region = "us-west-2"
   alias  = "west"
 }
+
+locals {
+  regions = {
+    east = aws.east
+    west = aws.west
+  }
+}

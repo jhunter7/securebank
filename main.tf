@@ -5,7 +5,7 @@ resource "aws_instance" "securebank_instance" {
   ami                    = var.instance_config["east"].ami
   instance_type          = var.instance_config["east"].instance_type
   availability_zone      = var.instance_config["east"].region
-  vpc_security_group_ids = [aws_security_group.securebank_instance_sg.id]
+  vpc_security_group_ids = [aws_security_group.securebank_instance_sg["east"].id]
 
   ebs_block_device {
     device_name           = "/dev/sdh"
@@ -26,7 +26,7 @@ resource "aws_instance" "securebank_instance_west" {
   ami                    = var.instance_config["west"].ami
   instance_type          = var.instance_config["west"].instance_type
   availability_zone      = var.instance_config["west"].region
-  vpc_security_group_ids = [aws_security_group.securebank_instance_sg.id]
+  vpc_security_group_ids = [aws_security_group.securebank_instance_sg["west"].id]
 
   ebs_block_device {
     device_name           = "/dev/sdh"
@@ -41,8 +41,14 @@ resource "aws_instance" "securebank_instance_west" {
 }
 
 resource "aws_security_group" "securebank_instance_sg" {
-  name        = "securebank_instance_sg"
-  description = "Allow SSH access for instances"
+  for_each = {
+    east = "us-east-1"
+    west = "us-west-2"
+  }
+
+  provider    = local.regions[each.key]
+  name        = "securebank_instance_sg-${each.key}"
+  description = "Allow SSH access for ${each.key} instances"
 
   ingress {
     from_port   = 22
