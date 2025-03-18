@@ -14,6 +14,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Install Vault CLI to retrieve secrets from Vault
+      - name: Install Vault CLI
+        run: |
+          curl -L -o vault.zip https://releases.hashicorp.com/vault/1.13.3/vault_1.13.3_linux_amd64.zip
+          unzip vault.zip
+          sudo mv vault /usr/local/bin/
+          vault version
+
+      # Log in to Vault and retrieve the test secret
+      - name: Vault Login and Retrieve Secret
+        env:
+          VAULT_ADDR: "http://127.0.0.1:8200"  # Update if your Vault is hosted elsewhere
+          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+        run: |
+          # Retrieve the secret from Vault (KV v2 example)
+          SECRET_VALUE=$(vault kv get -field=my_secret secret/myapp)
+          echo "Vault secret: $SECRET_VALUE"
+          # Export the secret for subsequent steps (if needed)
+          echo "MY_VAULT_SECRET=$SECRET_VALUE" >> $GITHUB_ENV
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -43,9 +63,8 @@ jobs:
 
   terraform_apply:
     name: Terraform Apply
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: terraform_plan
-    # Run apply only on push events to main.
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - name: Checkout repository
@@ -74,3 +93,80 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve plan.tfplan
+
+# name: Terraform CI/CD
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+
+# jobs:
+#   terraform_plan:
+#     name: Terraform Plan
+#     runs-on: self-hosted
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v2
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: us-east-1
+
+#       - name: Setup Terraform
+#         uses: hashicorp/setup-terraform@v2
+#         with:
+#           terraform_version: 1.3.0
+
+#       - name: Terraform Init
+#         run: terraform init
+      
+#       - name: Terraform Format Check
+#         run: terraform fmt -check -recursive
+
+#       - name: Terraform Plan
+#         run: terraform plan -out=plan.tfplan
+
+#       - name: Upload Terraform Plan Artifact
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: tfplan
+#           path: plan.tfplan
+
+#   terraform_apply:
+#     name: Terraform Apply
+#     runs-on: ubuntu-latest
+#     needs: terraform_plan
+#     # Run apply only on push events to main.
+#     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+
+#       - name: Download Terraform Plan Artifact
+#         uses: actions/download-artifact@v4
+#         with:
+#           name: tfplan
+#           path: .
+
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v2
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: us-east-1
+
+#       - name: Setup Terraform
+#         uses: hashicorp/setup-terraform@v2
+#         with:
+#           terraform_version: 1.3.0
+
+#       - name: Terraform Init
+#         run: terraform init
+
+#       - name: Terraform Apply
+#         run: terraform apply -auto-approve plan.tfplan
