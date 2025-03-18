@@ -1,18 +1,19 @@
 resource "aws_instance" "securebank_instance" {
   count = var.instance_config.count
 
-  ami               = var.instance_config.ami
-  instance_type     = var.instance_config.instance_type
-  availability_zone = var.instance_config.region
+  ami                    = var.instance_config.ami
+  instance_type          = var.instance_config.instance_type
+  availability_zone      = var.instance_config.region
+  vpc_security_group_ids = [aws_security_group.securebank_instance_sg.id]
 
   tags = {
-    Name = "instance-${count.index + 1}"
+    Name = "securebank-instance-${count.index + 1}"
   }
 }
 
-resource "aws_security_group" "github_runner_sg" {
-  name        = "github-runner-sg"
-  description = "Allow SSH access for GitHub runner"
+resource "aws_security_group" "securebank_instance_sg" {
+  name        = "securebank_instance_sg"
+  description = "Allow SSH access for instances"
 
   ingress {
     from_port   = 22
@@ -26,18 +27,5 @@ resource "aws_security_group" "github_runner_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-# EC2 Instance (free-tier eligible) for GitHub Runner; note that this is a separate instance
-resource "aws_instance" "github_runner" {
-  ami           = "ami-0f9de6e2d2f067fca"
-  instance_type = "t2.micro"
-  key_name      = "securebank-key-pair"
-
-  vpc_security_group_ids = [aws_security_group.github_runner_sg.id]
-
-  tags = {
-    Name = "SecureBank"
   }
 }
