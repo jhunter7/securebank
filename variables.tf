@@ -15,7 +15,7 @@ variable "instance_configs" {
     west = {
       instance_type = "t2.micro"
       region        = "us-west-2a"
-      ami           = "ami-03f8acd418785369b"            
+      ami           = "ami-03f8acd418785369b"
       count         = 2
     }
   }

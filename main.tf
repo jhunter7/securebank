@@ -1,6 +1,6 @@
 resource "aws_instance" "securebank_instance" {
   provider = aws.east
-  count = 3
+  count    = 3
 
   ami                    = var.instance_config.ami
   instance_type          = var.instance_config.instance_type
