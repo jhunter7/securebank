@@ -1,4 +1,4 @@
-variable "instance_configs" {
+variable "instance_config" {
   type = map(object({
     instance_type = string
     region        = string
