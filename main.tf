@@ -1,28 +1,42 @@
 resource "aws_instance" "securebank_instance" {
   provider = aws.east
-  count    = 3
+  count    = var.instance_config["east"].count
 
-  ami                    = var.instance_config.ami
-  instance_type          = var.instance_config.instance_type
-  availability_zone      = var.instance_config.region
+  ami               = var.instance_config["east"].ami
+  instance_type     = var.instance_config["east"].instance_type
+  availability_zone = var.instance_config["east"].region
   vpc_security_group_ids = [aws_security_group.securebank_instance_sg.id]
 
+  ebs_block_device {
+    device_name           = "/dev/sdh"
+    volume_size           = 20
+    volume_type           = "gp2"
+    delete_on_termination = true
+  }
+
   tags = {
-    Name = "securebank-${count.index + 1}"
+    Name = "securebank-e1-${count.index + 1}"
   }
 }
 
 resource "aws_instance" "securebank_instance_west" {
   provider = aws.west
-  count    = 2
+  count    = var.instance_config["west"].count
 
-  ami                    = var.instance_config.ami
-  instance_type          = var.instance_config.instance_type
-  availability_zone      = var.instance_config.region
+  ami               = var.instance_config["west"].ami
+  instance_type     = var.instance_config["west"].instance_type
+  availability_zone = var.instance_config["west"].region
   vpc_security_group_ids = [aws_security_group.securebank_instance_sg.id]
 
+  ebs_block_device {
+    device_name           = "/dev/sdh"
+    volume_size           = 20
+    volume_type           = "gp2"
+    delete_on_termination = true
+  }
+
   tags = {
-    Name = "securebank-${count.index + 1}"
+    Name = "securebank-w2-${count.index + 1}"
   }
 }
 
