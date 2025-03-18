@@ -2,9 +2,9 @@ resource "aws_instance" "securebank_instance" {
   provider = aws.east
   count    = var.instance_config["east"].count
 
-  ami               = var.instance_config["east"].ami
-  instance_type     = var.instance_config["east"].instance_type
-  availability_zone = var.instance_config["east"].region
+  ami                    = var.instance_config["east"].ami
+  instance_type          = var.instance_config["east"].instance_type
+  availability_zone      = var.instance_config["east"].region
   vpc_security_group_ids = [aws_security_group.securebank_instance_sg.id]
 
   ebs_block_device {
@@ -23,9 +23,9 @@ resource "aws_instance" "securebank_instance_west" {
   provider = aws.west
   count    = var.instance_config["west"].count
 
-  ami               = var.instance_config["west"].ami
-  instance_type     = var.instance_config["west"].instance_type
-  availability_zone = var.instance_config["west"].region
+  ami                    = var.instance_config["west"].ami
+  instance_type          = var.instance_config["west"].instance_type
+  availability_zone      = var.instance_config["west"].region
   vpc_security_group_ids = [aws_security_group.securebank_instance_sg.id]
 
   ebs_block_device {
