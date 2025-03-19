@@ -29,7 +29,7 @@ jobs:
           VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
         run: |
           # Retrieve the secret from Vault (KV v2 example)
-          SECRET_VALUE=$(vault kv get -field=my_secret secret/myapp)
+          SECRET_VALUE=$(vault kv get -field=mysecret secret/myapp)
           echo "Vault secret: $SECRET_VALUE"
           # Export the secret for subsequent steps (if needed)
           echo "MY_VAULT_SECRET=$SECRET_VALUE" >> $GITHUB_ENV
