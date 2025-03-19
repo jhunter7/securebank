@@ -14,25 +14,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Install Vault CLI to retrieve secrets from Vault
-      - name: Install Vault CLI
-        run: |
-          curl -L -o vault.zip https://releases.hashicorp.com/vault/1.13.3/vault_1.13.3_linux_amd64.zip
-          unzip vault.zip
-          sudo mv vault /usr/local/bin/
-          vault version
+      # # Install Vault CLI to retrieve secrets from Vault
+      # - name: Install Vault CLI
+      #   run: |
+      #     curl -L -o vault.zip https://releases.hashicorp.com/vault/1.13.3/vault_1.13.3_linux_amd64.zip
+      #     unzip vault.zip
+      #     sudo mv vault /usr/local/bin/
+      #     vault version
 
-      # Log in to Vault and retrieve the test secret
-      - name: Vault Login and Retrieve Secret
-        env:
-          VAULT_ADDR: "http://127.0.0.1:8200"  # Update if your Vault is hosted elsewhere
-          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
-        run: |
-          # Retrieve the secret from Vault (KV v2 example)
-          SECRET_VALUE=$(vault kv get -field=mysecret secret/myapp)
-          echo "Vault secret: $SECRET_VALUE"
-          # Export the secret for subsequent steps (if needed)
-          echo "MY_VAULT_SECRET=$SECRET_VALUE" >> $GITHUB_ENV
+      # # Log in to Vault and retrieve the test secret
+      # - name: Vault Login and Retrieve Secret
+      #   env:
+      #     VAULT_ADDR: "http://127.0.0.1:8200"  # Update if your Vault is hosted elsewhere
+      #     VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+      #   run: |
+      #     # Retrieve the secret from Vault (KV v2 example)
+      #     SECRET_VALUE=$(vault kv get -field=mysecret secret/myapp)
+      #     echo "Vault secret: $SECRET_VALUE"
+      #     # Export the secret for subsequent steps (if needed)
+      #     echo "MY_VAULT_SECRET=$SECRET_VALUE" >> $GITHUB_ENV
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
