@@ -14,7 +14,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # # Install Vault CLI to retrieve secrets from Vault
       # - name: Install Vault CLI
       #   run: |
       #     curl -L -o vault.zip https://releases.hashicorp.com/vault/1.13.3/vault_1.13.3_linux_amd64.zip
@@ -51,6 +50,15 @@ jobs:
       
       - name: Terraform Format Check
         run: terraform fmt -check -recursive
+
+      - name: Run Snyk IaC Scan
+        uses: snyk/actions@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          # The 'test' command will scan your project for vulnerabilities, including IaC issues.
+          # You can add additional args as needed (for example, '--severity-threshold=high').
+          args: test
 
       - name: Terraform Plan
         run: terraform plan -out=plan.tfplan
