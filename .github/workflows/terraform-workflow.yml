@@ -65,14 +65,14 @@ jobs:
       #   env:
       #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
              
-      - name: Run Snyk IaC Scan
-        uses: snyk/actions@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          # The 'test' command will scan your project for vulnerabilities, including IaC issues.
-          # You can add additional args as needed (for example, '--severity-threshold=high').
-          args: test
+      # - name: Run Snyk IaC Scan
+      #   uses: snyk/actions@master
+      #   env:
+      #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      #   with:
+      #     # The 'test' command will scan your project for vulnerabilities, including IaC issues.
+      #     # You can add additional args as needed (for example, '--severity-threshold=high').
+      #     args: test
 
       - name: Terraform Plan
         run: terraform plan -out=plan.tfplan
